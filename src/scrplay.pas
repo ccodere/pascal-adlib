@@ -5,6 +5,7 @@
 {   VERSION 1.50                                 }
 {************************************************}
 { See license.txt for usage of this source code }
+{ THIS CODE IS UNFINISHED AND DOES NOT WORK!    }
  
 { DEFINE DEBUG if you wish to trace the program. It will use crt.delay    }
 { instead of the interrupt routine, so no crashing while tracing!         }
@@ -397,7 +398,7 @@ end;
 
 Begin
  StreamError:= @StreamErrorProcedure;
- SCRPlayer.Init('E:\canon2.scr');
+ SCRPlayer.Init(paramStr(1));
  Repeat
  {$IFDEF DEBUG}
   SCRPlayer.ProcessEvent;
