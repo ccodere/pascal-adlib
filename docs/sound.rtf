@@ -1,0 +1,580 @@
+{\rtf1\ansi \deff0{\fonttbl
+{\f0\fmodern Courier-WP;}{\f1\froman Times New Roman;}}{\colortbl
+\red0\green0\blue0;}
+{\stylesheet{\fs20 \snext0 Normal;}
+}\margl1440\margr720\margt720\margb1134\ftnbj\ftnrestart \sectd \sbknone\endnhere 
+
+\pard \sl0 
+{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 Unit Sound;\par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 \par
+}{\plain \f1 This unit provides the basic input and output functions for the OPL2 FM chip that are found on both the 
+Adlib Sound Card and the Sound Blaster cards (actually all new versions of the Sound Blaster card have 
+the OPL3 chip which is 100% compatible with the older OPL2 chip).\par
+}{\plain \f1 \par
+}{\plain \f1 I do credit the following people:\par
+}{\plain \f1 \par
+}{\plain \f1  - Jeffrey S. Lee for his wonderful documentation on the Adlib sound card, without him, this code would 
+not have been possible. His documentation is STRONGLY recommended to help you understand how to 
+use these routines.\par
+}{\plain \f1  - Mark Feldman and his encyclopedia for all his wonderful information on basic IO of the IBM 
+computer.\par
+}{\plain \f1 \par
+}{\plain \f1 These constants are public to this code and maybe useful to you the developper:\par
+}{\plain \f1 \par
+}{\plain \f1   MODULATOR = 0;        Modulator Characteristic\par
+}{\plain \f1   CARRIER   =   1;            Carrier Characteristic\par
+}{\plain \f1  Percussive mode voices:\par
+}{\plain \f1   BASSDRUMVOICE  = 6;          \{ Bass Drum Voice number   \}\par
+}{\plain \f1   SNAREDRUMVOICE = 7;        \{ Snare Drum Voice number  \}\par
+}{\plain \f1   TOMTOMVOICE    = 8;            \{ Tom\_Tom Voice Number     \}\par
+}{\plain \f1   CYMBALVOICE    = 9;             \{ Cymbal Voice number      \}\par
+}{\plain \f1   HIHATVOICE     = 10;              \{ Hihat Voice number       \}\par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1  MIDIMIDDLEC = 60;       MIDI Specification Middle\_C                      \par
+}{\plain \f1  CARDMIDDLEC = 48;       Adlib Sound Card Register Middle C               \par
+}{\plain \f1  \par
+}{\plain \f1  These two last constants are very important, since the Middle-C for the Adlib card is not the same as the 
+one from the MIDI format. Therefore you should check the kind of file format you are using to play the 
+music, some use the standard MIDI middle-C (such as MIDI files, and CMF files), while other use the 
+sound card middle-C (such as the SA2 file format). These routines use the STANDARD MIDI middle-C, 
+so beware of the difference!\par
+}{\plain \f1 \par
+}{\plain \f1 Note for c++ users, as you can see I ported the code from pascal to c++, so the case conventions may not 
+be to the liking of everyone. As for the boolean value, it is a simple typedef of an unsigned char, which 
+can take, in my case, a value of 0 and a value of one. Zero representing FALSE.\par
+}{\plain \f1 \par
+}{\plain \b\f1 TAdlib}{\plain \f1   \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 \par
+}{\plain \f1 This is the basic object for input and output of sound to and from the Adlib sound card. \par
+}{\plain \f1 \par
+}{\plain \f1 FIELDS \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 \par
+}{\plain \b\f1 Algorithm}{\plain \f1 \tab pascal: array[0..10] of byte;\par
+}{\plain \f1             c++\tab : unsigned char Algorithm[10]; \par
+}{\plain \f1 \par
+\pard \li1440\sl0 
+This determines if both operators (Carrier and Modulator) produce sound directly for each 
+voice in the card. TRUE = Both modulator and carrier must be changed to change the 
+volume (FM mode).\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 Percussive}{\plain \f1 \tab pascal: boolean\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : boolean percussive;\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 The Adlib card is in Percussive mode if this is set to TRUE. Do not modify this value 
+directly.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 Voices}{\plain \f1 \tab pascal: integer\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : int voices;\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Maximum number of voices (starting from ZERO!) presently available to the sound card.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 PlayingNote}{\plain \f1 \tab pascal: Array[0..10] of Byte\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : unsigned char playingrate[10];\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 The note number currently playing on the specified voice, if it is equal to zero then that 
+voice is silent.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 These values are in the standard MIDI format.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 Volume\tab }{\plain \f1 pascal: Array[0..10] of Byte\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : unsigned char volume[10];\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Maximum volume for that voice (as set by the characteristics of the voice).\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \fi-2880\li2880\sl0\tx2880 
+{\plain \b\f1 ModulatorScalingLevel}{\plain \f1  \tab pascal: Array[0..10] of Byte\par
+}\pard \li2880\sl0 
+{\plain \f1 c++: unsigned char modulatorscalinglevel[10]; \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Modulator Operator Scaling level for each of the voices, used to determine the output 
+volume.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \fi-2880\li2880\sl0\tx2880 
+{\plain \b\f1 CarrierScalingLevel}{\plain \f1  \tab pascal: Array[0..10] of Byte\par
+}\pard \li2880\sl0 
+{\plain \f1 c++: unsigned char carrierscalinglevel[10];\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Carrier Operator Scaling Level for each of the voices, used to determine the output volume.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \b\f1 Output}{\plain \f1 \tab pascal: Array[0..15] of Word\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : unsigned short int Output[15];\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Direct A0B0 register output to the card.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 SemiToneCurrent}{\plain \f1  \tab pascal: Array[0..10] of Integer\par
+}\pard \li720\sl0 
+{\plain \f1       \tab c++: int SemiToneCurrent[10];\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Current semi-tone modification to apply to each of the voices and note being played. Set by 
+SemiToneUp and SemiToneDown.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 BDRegister}{\plain \f1 \tab pascal: Byte\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : unsigned char bdregister;\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Current value of the sound card BDRegister.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 METHODS                                               \par
+}{\plain \f1 \par
+}\pard \fi-1440\li1440\sl0\tx720\tx1440 
+{\plain \b\f1 Init}{\plain \f1 \tab \tab pascal: constructor init;\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : TAdlib() \par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This constructor first sets all local variables to zero, then verifies if an adlib card is 
+installed on the system by calling the BoardInstalled routine, if there is no adlib or 
+compatible card found, the CardNotInstalled procedure is called.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 If an Adlib or compatible sound card was found in the system, then all hardware registers 
+of the card are set to zero. The card is then prepared for standard output by putting the 
+Scaling on register to on, selecting sine waves for output and by setting the card to melodic 
+mode by calling the SetPercussive routine.\par
+}\pard \sl0 
+{\plain \f1   \par
+}{\plain \b\f1 \par
+}{\plain \b\f1 Done}{\plain \f1 \tab \tab pascal: destructor done;\par
+}{\plain \f1 \tab \tab c++\tab : ~TAdlib()\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Resets all registers of the sound card to zero.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 CardNotInstalled\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure CardNotInstalled; Virtual;\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab : void virtual CardNotInstalled()\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine is called by the constructor when no adlib card is detected on the system. By 
+default, it displays an error message and halts the program with an errorlevel of 1. \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine could be overriden to display another kind of message.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1  }{\plain \b\f1 NoteOff\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure NoteOff(voice: byte; note: byte);\par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \f1 \tab c++\tab : void NoteOff(unsigned char voice, unsigned char note)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine silences a voice specified by the voice parameter, the second parameter is 
+there for completeness, and can be set to any value in the specified limit.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Do not forget that voice one, is the voice number zero in the parameter list.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 NoteOn\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure NoteOff(voice: byte; note: byte);\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab : voice NoteOn(unsigned char voice, unsigned char note)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine opens a specified voice with the specified note, using the current instrument 
+and volume that has been initially been set by the programmer (by default all melodic 
+voices are set to electric pianos). \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 The value of the voice number depends on the percussive value. If in percussive mode, 
+voice can take a value between 0 and 10 (11 voices). In melodic mode, voice, can take a 
+value between 0 and 8 (9 voices).\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 The note value is the standard MIDI format note number (q.v). The card can play between 
+the values 12 and 107 of the standard MIDI format.\par
+}\pard \sl0 
+{\plain \b\f1 \par
+}{\plain \b\f1 SetVolume\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SetVolume(voice: byte; avolume: byte);\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab : void SetVolume(unsigned char voice, unsigned char avolume)\par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine sets the volume of the specified voice using a fraction of the initial voice set 
+by the instruments for that voice. Voice starts from zero. (That is the adlib voice number 
+one is specified as zero here). \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Avolume can take a value between 0 and 127, where 0 is practically silent and 127 is the 
+loudest.\par
+}\pard \sl0 
+{\plain \f1  \par
+}{\plain \f1 \par
+}{\plain \b\f1 SemiToneUp\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SemiToneUp(voice: byte; value: shortint);\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab : void SemiToneUp(unsigned char voice; signed char value)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine changes the number of semi-tones to modify the note to play on the specified 
+voice. This can be used while a note is still playing on that particular voice, in that case, 
+the note is retriggered after its new value has been calculated.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Note that this semi-tone modification to the original note stays active with this particular 
+voice until this or the semitonedown routine is once again called. (Using value = 0 means 
+no semi-tone modification). \par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 SemiToneDown }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SemiToneDown(voice: byte; value: shortint);\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab : void SemiToneDown(unsigned char voice; signed char value)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine changes the number of semi-tones to modify the note to play on the specified 
+voice. This can be used while a note is still playing on that particular voice, in that case, 
+the note is retriggered after its new value has been calculated.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Note that this semi-tone modification to the original note stays active with this particular 
+voice until this or the semitoneup routine is once again called. (Using value = 0 means no 
+semi-tone modification). \par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 MuteVoice}{\plain \f1 \par
+}{\plain \f1 \tab pascal: procedure MuteVoice(voice: byte);\par
+\tab c++\tab : void MuteVoice(unsigned char voice)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine is different from the NoteOff routine, in that it will immediately stop the 
+specified voice, since it first sets the decay rate to its maximum level (decay will be the 
+fastest), and then will call the noteoff routine.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 SetPercussive }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SetPercussive(mode: boolean);\par
+}\pard \sl0 
+{\plain \f1 \tab c++\tab   : void SetPercussive(boolean mode)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine sets up the card either in percussive mode (if mode is TRUE), or melodic 
+mode (if mode is FALSE).\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 It then adjusts the voices variable to reflect the number of available voices in that 
+particular mode, and finally sets up the default instruments for the particular mode.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 SetWaveChar\tab }{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SetWaveChar(voice: byte; modcar: tbit; value: byte);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void SetWaveChar(unsigned char voice, char modcar, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine directly outputs to the sound card the value value to set the wave characteristic 
+of a particular voice. Voice registers which are written to will depend on the modcar 
+parameter, if modcar = CARRIER then the parameter value will be output to the carrier 
+wave characteristic of the specified voice. If modcar = MODULATOR then the parameter 
+value will be output to the modulator wave characteristic. \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine, depending on the voice number and type of operator to modify, will output to 
+registers between 20h and 35h.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 AllScalingOutput}{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure AllScalingOutput(voice: byte; modcar: tbit; value: byte);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void AllScalingOutput(unsigned char voice, char modcar, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine directly outputs to the sound card the value parameter to set the scaling and 
+output levels characteristic of a particular voice. Voice registers which are written to will 
+depend on the modcar parameter, if modcar = CARRIER then the parameter value will be 
+output to the carrier scaling and output levels of the specified voice. If modcar = 
+MODULATOR then the parameter value will be output to the modulator scaling and 
+output levels of the specified voice. \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine, depending on the voice number and type of operator to modify, will output to 
+registers between 40h and 55h.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 AllAttackDecay}{\plain \f1 \par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure AllAttackDecay(voice: byte; modcar: tbit; value: byte);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void AllAttackDecay(unsigned char voice, char modcar, unsigned char value)\par
+\pard \li1440\sl0 
+This routine directly outputs to the sound card the value parameter to set the attack and 
+decay rate characteristics of a particular voice. Voice registers which are written to will 
+depend on the modcar parameter, if modcar = CARRIER then the parameter value will be 
+output to the carrier attack and decay rates of the specified voice. If modcar = 
+MODULATOR then the parameter value will be output to the modulator attack and decay 
+rates of the specified voice. \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine, depending on the voice number and type of operator to modify, will output to 
+registers between 60h and 75h.\par
+}\pard \sl0 
+{\plain \b\f1 \par
+}{\plain \b\f1 AllSusRelease\par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure AllSusRelease(voice: byte; modcar: tbit; value: byte);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void AllSusRelease(unsigned char voice, char modcar, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine directly outputs to the sound card the value parameter to set the sustain and 
+release rate characteristics of a particular voice. Voice registers which are written to will 
+depend on the modcar parameter, if modcar = CARRIER then the parameter value will be 
+output to the carrier sustain and release rates of the specified voice. If modcar = 
+MODULATOR then the parameter value will be output to the modulator sustain and 
+release rates of the specified voice. \par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine, depending on the voice number and type of operator to modify, will output to 
+registers between 60h and 75h.\par
+}\pard \sl0 
+{\plain \b\f1 \par
+}{\plain \b\f1 SetAM\par
+}\pard \li720\sl0 
+{\plain \f1 pascal: procedure SetAM(am: boolean);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void SetAM(boolean am)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Selects if the amplitude modulation depth should be of 4.8 dB (TRUE) or 1 dB  (FALSE). 
+This modifies only one bit of the sound card\'92s Bdh register.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 SetVibrato\par
+}{\plain \b\f1 \tab }{\plain \f1 pascal: procedure SetVibrato(vib: boolean);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void SetVibrato(boolean vib)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Selects if the vibrato depth should be of of 14 cent (TRUE) or 7 cent (FALSE). This 
+modifies only one bit of the sound card\'92s Bdh register.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 AllFeedBack\par
+}{\plain \f1 \tab pascal: procedure AllFeedback(voice: byte; value: byte);\par
+}{\plain \f1 \tab c++\tab : void AllFeedback(unsigned char voice, unsigned char value)\par
+}{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine directly outputs to the sound card registers indicating the type of feedback and 
+mode to use (AM or FM) when playing sounds on a particular voice.. This corresponds to 
+the C0h to C8h registers. (All depending on the voice which was chosen).\par
+}\pard \sl0 
+{\plain \b\f1 \par
+}{\plain \b\f1 SetWaveSelect}{\plain \f1 \par
+}{\plain \f1 \tab pascal: procedure SetWaveSelect(voice: byte; modcar: tbit; value: byte);\par
+}\pard \li720\sl0 
+{\plain \f1 c++\tab : void SetWaveSelect(unsigned char voice, char modcar, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+\pard \li1440\sl0 
+This routine directly outputs the value parameter to the sound card\'92s registers indicating 
+the type of wave to use when outputting sounds to a particular voice. If modcar = 
+CARRIER , the type of wave made by the carrier operator will be determined by the value 
+parameter. If modcar = MODULATOR, the type of wave made by the modulator operator 
+will be determined by the value parameter.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 This routine, depending on the voice number and type of operator to modify, will output to 
+the card registers between E0h and F5h.\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Different possible waveforms are as follows:\par
+}\pard \sl0 
+{\plain \f1               ___              ___            ___    ___       _      _\par
+}{\plain \f1               /   \\            /   \\          /   \\  /   \\     / |    / |\par
+}{\plain \f1            /_____\\_______   /_____\\_____   /_____\\/_____\\   /__|___/__|___\par
+}{\plain \f1                    \\     /\par
+}{\plain \f1                     \\___/\par
+}{\plain \f1 \par
+}{\plain \f1            value    00           01               02               03\par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1 PRIVATE \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 \par
+}{\plain \f1 These methods are private to this class.\par
+}{\plain \f1 \par
+}{\plain \f1 Calcnote : \par
+}\pard \li720\sl0 
+{\plain \f1 Calculates the output to send to the registers all depending on an adlib card input note.\par
+}\pard \sl0 
+{\plain \f1 SetRhythmInstruments: \par
+}\pard \li720\sl0 
+{\plain \f1 Sets the default rhythm instruments when the card is initialised in percussive mode.\par
+}\pard \sl0 
+{\plain \f1 SetMelodicinstruments: \par
+}\pard \li720\sl0 
+{\plain \f1 Sets the default instruments when the card is initialised in melodic mode (in this case all voices 
+are set to electric pianos).\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 BoardInstalled Function\par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \f1 Purpose\tab Returns TRUE (1) if an Adlib or compatible sound card was detected, otherwise returns 
+FALSE (0).\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 Declaration \par
+}\pard \li1440\sl0 
+{\plain \f1 pascal: function BoardInstalled: boolean;\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : boolean boardinstalled()\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 Result Type\tab boolean\par
+}{\plain \f1 \par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \f1 Remarks\tab This routine checks the internal ports of the PC and verifies if the correct response 
+sequence is found for the detection of the adlib card.\par
+}\pard \li1440\sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Detection is done at the standard adlib port 388 Hex.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 Targets     Real, Protected.\par
+}{\plain \f1 \par
+Example     Begin\par
+}{\plain \f1                 If BoardInstalled then\par
+}{\plain \f1                  WriteLn('Adlib sound card found\'92);\par
+}{\plain \f1             end.\par
+}{\plain \f1 \par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 SndOutput procedure\par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \b\f1 Purpose}{\plain \f1 \tab This routine sends a data byte to the specified adlib register.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 Declaration }{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 pascal: procedure SndOutput(reg: byte; value: byte);\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : void SndOutput(unsigned char reg, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \b\f1 Remarks}{\plain \f1 \tab This routine sends a date byte (value) to the specified register (reg) of the adlib card.\par
+}\pard \li1440\sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Data is sent to the standard adlib port 389 Hex.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 Targets}{\plain \f1      Real, Protected.\par
+}{\plain \f1 \par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}{\plain \f1 FastOutput procedure\par
+}{\plain \f1 \'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\'20\par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \b\f1 Purpose}{\plain \f1 \tab This routine sends a data byte to the specfied adlib register.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \b\f1 Declaration }{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 pascal: procedure FastOutput(reg: byte; value: byte);\par
+}\pard \li1440\sl0 
+{\plain \f1 c++\tab : void FastOutput(unsigned char reg, unsigned char value)\par
+}\pard \sl0 
+{\plain \f1 \par
+}\pard \fi-1440\li1440\sl0\tx1440 
+{\plain \b\f1 Remarks}{\plain \f1 \tab This routine sends a date byte (value) to the specified register (reg) of the adlib card, only 
+if the value of the register has changed. In other words it compares the current value of the 
+register with the value to send, if it is the same, it does not send it. This speeds up the 
+procedure noticeably (the OPL2 chip requires a long delay to respond to commands).\par
+}\pard \li1440\sl0 
+{\plain \f1 \par
+}\pard \li1440\sl0 
+{\plain \f1 Data is sent to the standard adlib port 389 Hex.\par
+}\pard \sl0 
+{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \b\f1 Targets}{\plain \f1      Real, Protected.\par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\plain \f1 \par
+}{\*\bkmkstart BM_1_}{\*\bkmkend BM_1_}}
