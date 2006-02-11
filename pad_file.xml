@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XML_DIZ_INFO>
+<MASTER_PAD_VERSION_INFO>
+    <MASTER_PAD_VERSION>1.15</MASTER_PAD_VERSION>
+    <MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
+</MASTER_PAD_VERSION_INFO>
+<Company_Info>
+        <Company_Name>Optima SC Inc.</Company_Name>
+        <Address_1 />
+        <Address_2 />
+        <City_Town />
+        <State_Province />
+        <Zip_Postal_Code />
+        <Country>Canada</Country>
+        <Company_WebSite_URL>http://www.optimasc.com</Company_WebSite_URL>
+<Contact_Info>
+        <Author_First_Name>Carl Eric</Author_First_Name>
+        <Author_Last_Name>Codere</Author_Last_Name>
+        <Author_Email>ccodere@ieee.org</Author_Email>
+        <Contact_First_Name />
+        <Contact_Last_Name />
+        <Contact_Email />
+    </Contact_Info>
+<Support_Info>
+        <Sales_Email />
+        <Support_Email />
+        <General_Email>info@optimasc.com</General_Email>
+        <Sales_Phone />
+        <Support_Phone />
+        <General_Phone />
+        <Fax_Phone />
+    </Support_Info>
+</Company_Info>
+<Program_Info>
+        <Program_Name>CMFPlay</Program_Name>
+        <Program_Version />
+        <Program_Release_Month>04</Program_Release_Month>
+        <Program_Release_Day>26</Program_Release_Day>
+        <Program_Release_Year>2004</Program_Release_Year>
+        <Program_Cost_Dollars>0</Program_Cost_Dollars>
+        <Program_Cost_Other_Code />
+        <Program_Cost_Other />
+        <Program_Type>Freeware</Program_Type>
+        <Program_Release_Status>Minor Update</Program_Release_Status>
+        <Program_Install_Support>No Install Support</Program_Install_Support>
+        <Program_OS_Support>MS-DOS</Program_OS_Support>
+        <Program_Language>English</Program_Language>
+<File_Info>
+        <Filename_Versioned />
+        <Filename_Previous />
+        <Filename_Generic>cmfplay.zip</Filename_Generic>
+        <Filename_Long>cmfplay.zip</Filename_Long>
+        <File_Size_Bytes>98117</File_Size_Bytes>
+        <File_Size_K>96</File_Size_K>
+        <File_Size_MB>0.10</File_Size_MB>
+    </File_Info>
+<Expire_Info>
+        <Has_Expire_Info>N</Has_Expire_Info>
+        <Expire_Count />
+        <Expire_Based_On>Days</Expire_Based_On>
+        <Expire_Other_Info />
+        <Expire_Month />
+        <Expire_Day />
+        <Expire_Year />
+    </Expire_Info>
+        <Program_Change_Info />
+        <Program_Specific_Category>Audio</Program_Specific_Category>
+        <Program_Categories />
+        <Program_System_Requirements>Adlib compatible sound card</Program_System_Requirements>
+        <Includes_JAVA_VM>N</Includes_JAVA_VM>
+        <Includes_VB_Runtime>N</Includes_VB_Runtime>
+        <Includes_DirectX>N</Includes_DirectX>
+</Program_Info>
+<Program_Descriptions>
+<English>
+        <Keywords>adlib,player,programmming,pascal</Keywords>
+        <Char_Desc_45>Adlib programming interface</Char_Desc_45>
+        <Char_Desc_80>Adlib programming interface, with CMF and SA2 players (w/pascal source)</Char_Desc_80>
+        <Char_Desc_250>Adlib programming interface, with CMF and SA2 players (w/pascal source)</Char_Desc_250>
+        <Char_Desc_450>Adlib programming interface, with CMF and SA2 players (w/pascal source)</Char_Desc_450>
+        <Char_Desc_2000>Adlib programming interface, with CMF and SA2 players (w/pascal source)</Char_Desc_2000>
+</English>
+</Program_Descriptions>
+<Web_Info>
+<Application_URLs>
+        <Application_Info_URL />
+        <Application_Order_URL />
+        <Application_Screenshot_URL />
+        <Application_Icon_URL />
+        <Application_XML_File_URL />
+    </Application_URLs>
+<Download_URLs>
+        <Primary_Download_URL />
+        <Secondary_Download_URL />
+        <Additional_Download_URL_1 />
+        <Additional_Download_URL_2 />
+    </Download_URLs>
+</Web_Info>
+<Permissions>
+        <Distribution_Permissions />
+        <EULA>Copyright (c) 2004 Carl Eric Codere. 
+All rights reserved.
+
+A) For usage in non-commercial software
+----------------------------------------
+
+Usage in non-commercial packages/software, 
+are permitted provided that the following 
+conditions are met:
+
+1. Redistributions of the unmodified package is
+allowed.
+
+2. Redistributions in binary form must reproduce the 
+above copyright notice, this list of conditions and the
+following disclaimer in the documentation and/or other 
+materials provided with the distribution.
+
+3. The end-user documentation included with the 
+redistribution, if any, must include the following 
+acknowledgment:
+
+&quot;This product includes software developed by 
+Carl Eric Codere of Optima SC Inc.&quot;
+
+Alternately, this acknowledgment may appear in the 
+software itself, if and wherever such third-party 
+acknowledgments normally appear.
+
+B) For usage in commercial software
+-----------------------------------
+
+1. Redistributions and use in source and binary
+form is expressely forbidden without the prior
+written permissions of the original author.
+
+2. In most cases, arrangments can be made for a small
+fee for the usage of this software or source package
+in commercial software/packages. Contact the author
+of the package for more information.
+
+General terms
+-------------
+
+1. The names &quot;Optima SC Inc.&quot; and &quot;Carl Eric Codere&quot; must 
+not be used to endorse or promote products derived from 
+this software without prior written permission. 
+
+2. Modified source code redistribution is not allowed
+without prior written permission. 
+
+THIS SOFTWARE IS PROVIDED &quot;AS IS&quot; AND ANY EXPRESSED OR 
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+OPTIMA SC INC. OR ITS CONTRIBUTORS BE LIABLE FOR ANY 
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</EULA>
+</Permissions>
+</XML_DIZ_INFO>
