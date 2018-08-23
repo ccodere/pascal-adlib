@@ -2,7 +2,7 @@ Introduction
 ------------
 Contains a low-level OPL2 chipset access API used in old Adlib sound and Soundblaster cards for MS-DOS. The code still compiles with both Turbo and Borland Pascal 7.0 and the C code with Turbo C 2.0.
 
-It also contains sample CMF / SA2 players. The SA2 player was quite impressive at the time. The SCR player is incomplete and is not buggy.
+It also contains sample CMF / SA2 players. The SA2 player was quite impressive at the time. The SCR player is incomplete and is  buggy.
 
 I NO LONGER MAINTAIN THIS CODE, PULL REQUESTS ARE ACCEPTED, BUT DO NOT ASK ME ANYTHING APART FROM THAT.
 
