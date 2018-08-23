@@ -22,5 +22,7 @@ Credits
 * The PIT Interrupt was also taken from Mark Feldman and his great PCGPE encyclopedia.
 
 
+Carl Eric Codere
+
 
 
