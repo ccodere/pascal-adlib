@@ -14,7 +14,7 @@ Licensing information is found in doc/license.txt
 Credits
 -------
 
-* FIRST AND FOREMOST -> Jeffrey S. Lee for his documentation on the OPL2 Chipset found in the Adlib Sound Card. 
+* FIRST AND FOREMOST Jeffrey S. Lee for his documentation on the OPL2 Chipset found in the Adlib Sound Card. 
 * SBFMDRV Tracing to find out how to calculate the SemiTones and Note modifications.
 * The person who gave me the original idea of starting this project: Ezra Dreisbach with his C SCR FM Player.
 * All information on the SA2 file format was taken from the SADT2 document which was created by Erik Pojar
