@@ -1,15 +1,22 @@
-Introduction
-------------
+Overview
+--------
+
 Contains a low-level OPL2 chipset access API used in old Adlib sound and Soundblaster cards for MS-DOS. The code still compiles with both Turbo and Borland Pascal 7.0 and the C code with Turbo C 2.0.
 
 It also contains sample CMF / SA2 players. The SA2 player was quite impressive at the time. The SCR player is incomplete and is  buggy.
 
-I NO LONGER MAINTAIN THIS CODE, PULL REQUESTS ARE ACCEPTED, BUT DO NOT ASK ME ANYTHING APART FROM THAT.
+This code is no longer maintained, patches/pull requests are accepted, but no other support will be given.
 
-License
+Licence
 -------
 
-Licensing information is found in doc/license.txt
+See docs/license.txt for the exact licensing terms. 
+
+
+Building
+--------
+
+Simply build the units using Turbo Pascal 7 or Borland Pascal 7.
 
 Credits
 -------
@@ -22,7 +29,8 @@ Credits
 * The PIT Interrupt was also taken from Mark Feldman and his great PCGPE encyclopedia.
 
 
-Carl Eric Codere
 
+Enjoy!
+Carl Eric Codere
 
 
